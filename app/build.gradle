@@ -1,0 +1,72 @@
+apply plugin: 'com.android.application'
+apply plugin: 'me.tatarka.retrolambda'//3.1 MVP 页面相关
+apply plugin: 'com.neenbedankt.android-apt'//3.1 MVP 页面相关
+apply plugin: 'org.greenrobot.greendao'// 7.1 greenDao相关依赖
+
+android {
+    compileSdkVersion 26
+    buildToolsVersion "26.0.3"
+    defaultConfig {
+        applicationId "com.android.alen.mybasicproject"
+        minSdkVersion 15
+        targetSdkVersion 26
+        versionCode 1
+        versionName "1.0"
+
+        // 2.1 设置MultiDex可用
+        multiDexEnabled true
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    //7.2
+    greendao {
+        schemaVersion 1
+        daoPackage 'com.android.alen.mybasicproject.greendao.gen'// 这个地方是GreenDao 自动生成文件的路径  entity所在包
+        targetGenDir 'src/main/java'// 生成数据库文件的目录;
+    }
+
+    productFlavors {// 多渠道打包
+        guanfang {
+            manifestPlaceholders = [CHANNEL_VALUE: "0"]
+        }
+        ali {
+            manifestPlaceholders = [CHANNEL_VALUE: "ali"]
+        }
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile 'com.android.support:appcompat-v7:26.+'
+    compile 'com.android.support:recyclerview-v7:26.+'
+
+    //2.2  MultiDex的依赖
+    compile 'com.android.support:multidex:1.0.0'
+
+    // 3.1 MVP 页面相关   butterKnife lambada  Dagger
+    compile 'com.jakewharton:butterknife:7.0.0'
+    apt 'com.google.dagger:dagger-compiler:2.5'    //使用APT生成工具，生成需要的DI代码
+    provided 'javax.annotation:jsr250-api:1.0'//JSR250的jar包，使用这个和使用glassFish的那个一样，仅为了使用@Inject 和@Named注解
+    compile 'com.google.dagger:dagger:2.5'
+
+    //3.3 Retrofit 和 RxJava 相关的依赖
+    compile 'com.squareup.retrofit2:retrofit:2.0.0-beta4'    //retrofit
+    compile 'com.squareup.retrofit2:converter-gson:2.0.0-beta4'//gson解析
+    compile 'io.reactivex:rxandroid:1.1.0'//rxjava
+    compile 'com.squareup.retrofit2:adapter-rxjava:2.0.0-beta4'//rxjava
+    provided 'org.glassfish:javax.annotation:10.0-b28'//dragger2
+    apt 'com.google.dagger:dagger-compiler:2.0.2'//dragger2
+    compile 'com.google.dagger:dagger:2.0.2'//dragger2
+
+    //4.1 Glide 图片加载依赖
+    compile 'com.github.bumptech.glide:glide:3.7.0'
+
+    // 7.1 GreenDao
+    compile 'org.greenrobot:greendao:3.2.2'
+
+}
